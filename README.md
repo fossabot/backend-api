@@ -1,6 +1,6 @@
 # Sandra/ backend-api
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/SANDRAProject/backend-api.svg)](https://greenkeeper.io/)
+[![Code Climate](https://img.shields.io/codeclimate/github/SANDRAProject/backend-api.svg?style=flat-square)]()
 [![Build Status](https://img.shields.io/travis/SANDRAProject/backend-api.svg?style=flat-square)](https://travis-ci.org/SANDRAProject/backend-api)
 [![Coveralls](https://img.shields.io/coveralls/SANDRAProject/backend-api.svg?style=flat-square)](https://coveralls.io/github/SANDRAProject/backend-api)
 [![license](https://img.shields.io/github/license/SANDRAProject/backend-api.svg?style=flat-square)](https://github.com/SANDRAProject/backend-api/blob/master/LICENSE.md)

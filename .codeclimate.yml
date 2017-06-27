@@ -1,0 +1,17 @@
+---
+engines:
+  fixme:
+    enabled: true
+  tslint:
+    enabled: true
+    channel: beta
+  dockerfilelint:
+    enabled: true
+ratings:
+  paths:
+  - "**.ts"
+exclude_paths:
+- config/
+- node_modules/
+- test/
+- coverage/

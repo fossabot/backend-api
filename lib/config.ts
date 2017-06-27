@@ -5,7 +5,7 @@ import * as fs from "fs-extra";
 
 let config: Config;
 
-let path = process.env.CLOVER_CONFIG;
+let path = process.env.SANDRA_BACKEND_CONFIG;
 if (process.env.NODE_ENV !== "test") {
 
   if (fs.pathExistsSync("./config/config.yaml")) {
