@@ -20,10 +20,13 @@ if (process.env.NODE_ENV === "test") {
 
 const PORT = config.get("port") || 3000;
 
-db
+export default db
   .then((connection) => {
     log.info(`database connected to ${config.get("mysql_url")}`);
     server.listen(PORT);
     log.info(`server listening on port ${PORT}`);
   })
-  .catch((err) => console.error(err));
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });

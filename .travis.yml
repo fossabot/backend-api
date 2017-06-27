@@ -20,3 +20,5 @@ addons:
       - g++-4.8
 services:
   - mysql
+notifications:
+  webhooks: https://hooks.pubu.im/services/2kl96xxbd6xnigg
