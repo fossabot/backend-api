@@ -6,15 +6,10 @@ import * as fs from "fs-extra";
 let config: Config;
 
 let path = process.env.SANDRA_BACKEND_CONFIG;
-if (process.env.NODE_ENV !== "test") {
-
-  if (fs.pathExistsSync("./config/config.yaml")) {
-    path = path || "./config/config.yaml";
-  }
-  path = path || "./config/config.sample.yaml";
-} else {
-  path = "./config/config.test.yaml";
+if (fs.pathExistsSync("./config/config.yaml")) {
+  path = path || "./config/config.yaml";
 }
+path = path || "./config/config.sample.yaml";
 config = new Config(path);
 config.pullSync();
 

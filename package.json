@@ -56,9 +56,10 @@
     "test": "nyc -r html mocha",
     "test-cov": "nyc -r lcovonly -r html mocha",
     "postinstall": "tsc",
-    "pretest": "tsc",
+    "pretest": "tsc&& tslint -p . -e node_modules/**.*",
     "dev": "supervisor -w . bin/run | pino",
-    "start": "node ./bin/run"
+    "start": "node ./bin/run",
+    "lint": "tslint -p . -e node_modules/**.*"
   },
   "greenkeeper": {
     "ignore": []
