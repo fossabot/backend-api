@@ -2,3 +2,4 @@ password_hash_rounds: 1
 mysql_url: mysql://root@127.0.0.1:3306/sandra
 port: 3000
 jwt_key: 943a3bb4
+token_expires: 7d
