@@ -28,7 +28,7 @@ export default () => {
     after(async () => {
       await db.getRepository(Session).clear();
     });
-    it("return 200 for corrent request", async () => {
+    it("return 200 for correct request", async () => {
       const result = await request({
         method: "PUT",
         url: `${baseUrl}/session`,

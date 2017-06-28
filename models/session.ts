@@ -6,6 +6,7 @@ import config from "../lib/config";
 import { connection } from "../lib/db";
 import User from "./user";
 import * as uuid from "uuid/v4";
+import ms = require("ms");
 
 // tslint:disable:max-classes-per-file
 // tslint:disable-next-line:no-namespace
@@ -38,7 +39,8 @@ export default class Session {
     this.uid = user.id;
     this.token = uuid();
   }
-  private getNewExpirationDate = () => new Date(Date.now() + Math.round(config.get("token_expires") / 1000));
+  private getNewExpirationDate = () =>
+    new Date(Date.now() + Math.round(ms(config.get("token_expires") as string) / 1000))
 
   @Column({ type: "int" })
   public uid: number;
