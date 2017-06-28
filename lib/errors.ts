@@ -4,8 +4,8 @@ import User from "../models/user";
 
 // tslint:disable:max-classes-per-file
 export class ApiError extends Error {
-  public code = "UNDEFINED_ERROR";
-  public status = 500;
+  public readonly code: string = "UNDEFINED_ERROR";
+  public readonly status: number = 500;
   constructor(code: string, httpCode: number) {
     super(code);
     this.name = code + "_Error";
@@ -24,7 +24,7 @@ export class NotImplementedError extends ApiError {
   }
 }
 export class InternalServerError extends ApiError {
-  public baseError: any;
+  public readonly baseError: any;
   constructor(error: any) {
     super("INTERNAL_SERVER_ERROR", 500);
     this.baseError = error;
@@ -36,15 +36,15 @@ export class BasicAuthNotSuppliedError extends ApiError {
   }
 }
 export class EmailNotFoundError extends ApiError {
-  public email: string;
+  public readonly email: string;
   constructor(email: string) {
     super("EMAIL_NOT_FOUND", 401);
     this.email = email;
   }
 }
 export class PasswordMismatchError extends ApiError {
-  public user: User;
-  public wrongPassword: string;
+  public readonly user: User;
+  public readonly wrongPassword: string;
   constructor(user: User, wrongPassword: string) {
     super("PASSWORD_MISMATCH", 401);
     this.user = user;
@@ -52,8 +52,8 @@ export class PasswordMismatchError extends ApiError {
   }
 }
 export class InsufficientPermissionError extends ApiError {
-  public user: User;
-  public permission: string;
+  public readonly user: User;
+  public readonly permission: string;
   constructor(user: User, permission: string) {
     super("INSUFFICIENT_PERMISSION", 403);
     this.user = user;

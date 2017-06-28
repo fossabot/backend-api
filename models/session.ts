@@ -34,8 +34,8 @@ export namespace Errors {
 
 @Entity()
 export default class Session {
-  constructor(uid: number) {
-    this.uid = uid;
+  constructor(user: User) {
+    this.uid = user.id;
     this.token = uuid();
   }
   private getNewExpirationDate = () => new Date(Date.now() + Math.round(config.get("token_expires") / 1000));
