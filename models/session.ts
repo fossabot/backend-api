@@ -54,16 +54,20 @@ export default class Session {
   public updatedAt: Date;
   @Column({ type: "datetime" })
   public expiresAt = this.getNewExpirationDate();
+  public get expired() {
+    return this.expiresAt <= new Date(Date.now);
+  }
 
-  public checkValidation = async () => {
-    if (this.expiresAt <= new Date(Date.now)) {
+  public getUser = async () => {
+    if (this.expired) {
       throw new Errors.TokenExpiredError(this.expiresAt);
     }
     const user = await connection.getRepository(User).findOneById(this.uid);
     if (!user) {
       throw new Errors.UserNotFoundError(this.token, this.uid);
+    } else {
+      return user;
     }
-    return true;
   }
   public renew = () => {
     this.expiresAt = this.getNewExpirationDate();

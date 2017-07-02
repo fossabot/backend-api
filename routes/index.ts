@@ -8,15 +8,10 @@ import { connection } from "../lib/db";
 import log from "../lib/log";
 import * as Errors from "../lib/errors";
 
-declare module "koa" {
-  // tslint:disable-next-line
-  interface Context {
-    user: User | undefined;
-  }
+interface ICtxState {
+  authType: "Basic" | "Bearer";
+  user?: User;
+  // TODO: support confirmation& service
 }
-
-router.get("/", async (ctx) => {
-  throw new Errors.NotImplementedError();
-});
 
 export default router;
