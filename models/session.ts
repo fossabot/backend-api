@@ -62,8 +62,8 @@ export default class Session {
     return this.expiresAt <= new Date(Date.now());
   }
 
-  public getUser = async () => {
-    if (this.expired) {
+  public getUser = async (ignoreExpiration = false) => {
+    if ((!ignoreExpiration) && this.expired) {
       throw new Errors.TokenExpiredError(this.expiresAt);
     }
     const user = await connection.getRepository(User).findOneById(this.uid);
@@ -77,8 +77,8 @@ export default class Session {
     this.expiresAt = this.getNewExpirationDate();
   }
 
-  public toView = async () => {
-    const user = await this.getUser();
+  public toView = async (ignoreExpiration = false) => {
+    const user = await this.getUser(ignoreExpiration);
     return {
       token: this.token,
       user: user.toView(),

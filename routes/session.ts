@@ -37,5 +37,14 @@ router.get("/session", async (ctx) => {
     ctx.body = await state.session.toView();
   }
 });
+router.delete("/session", async (ctx) => {
+  await authUser(ctx, "Bearer");
+  const state = ctx.state as ICtxState;
+  if (state.session) {
+    state.session.expiresAt = new Date(Date.now());
+    await db.getRepository(Session).persist(state.session);
+    ctx.body = await state.session.toView(true);
+  }
+});
 
 export default router;

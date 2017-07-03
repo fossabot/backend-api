@@ -310,4 +310,61 @@ export default () => {
       expect(result.body.code).to.eql("INVALID_TOKEN");
     });
   });
+  describe("DELETE /session", () => {
+    let user: User;
+    let session: Session;
+    before(async () => {
+      user = new User("user@example.com");
+      await db.getRepository(User).clear();
+      await user.setPassword("123456");
+      await db.getRepository(User).persist(user);
+      session = new Session(user);
+      await db.getRepository(Session).clear();
+      await db.getRepository(Session).persist(session);
+    });
+    after(async () => {
+      await db.getRepository(User).clear();
+      await db.getRepository(Session).clear();
+    });
+    it("200 OK", async () => {
+      const result = await request({
+        method: "DELETE",
+        url: `${baseUrl}/session`,
+        simple: false,
+        resolveWithFullResponse: true,
+        json: true,
+        auth: {
+          bearer: session.token,
+        },
+      });
+      expect(result.statusCode).eql(200);
+      expect(result.body.token).to.be.a("string");
+      {
+        const us = result.body.user;
+        const uv = user.toView();
+        const handleDate = (str: string) => str.substr(0, str.length - 5);
+        expect(us.id).to.eql(uv.id);
+        expect(us.email).to.eql(uv.email);
+        expect(us.permissions).to.eql(uv.permissions);
+        expect(handleDate(us.createdAt)).to.eql(handleDate(uv.createdAt));
+        expect(handleDate(us.updatedAt)).to.eql(handleDate(uv.updatedAt));
+      }
+      expect(result.body.permissions.admin).to.be.false;
+      expect(result.body.createdAt).to.match(dateRegExp);
+      expect(result.body.updatedAt).to.match(dateRegExp);
+      expect(result.body.expiresAt).to.match(dateRegExp);
+      const errResult = await request({
+        method: "GET",
+        url: `${baseUrl}/session`,
+        simple: false,
+        resolveWithFullResponse: true,
+        json: true,
+        auth: {
+          bearer: session.token,
+        },
+      });
+      expect(errResult.statusCode).to.eql(403);
+      expect(errResult.body.code).to.eql("EXPIRED_TOKEN");
+    });
+  });
 };
