@@ -1,19 +1,21 @@
 "use strict";
 
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, Index, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import * as bcrypt from "bcrypt";
 import config from "../lib/config";
 import { connection } from "../lib/db";
 import IPermission from "./IPermission";
+import * as uuid from "uuid/v4";
 
 @Entity()
+@Index("email_unique_with_deletion", ["email", "deleteToken"], { unique: true })
 export default class User {
   constructor(email: string) {
     this.email = email;
   }
   @PrimaryGeneratedColumn()
   public id: number;
-  @Column({ length: 50, nullable: false, unique: true })
+  @Column({ length: 50, nullable: false })
   public email: string;
   @Column({ name: "password", type: "varchar" })
   public hashedPassword: string;
@@ -28,6 +30,9 @@ export default class User {
   public createdAt: Date;
   @UpdateDateColumn()
   public updatedAt: Date;
+  @Column({ name: "delete_token", nullable: true })
+  public deleteToken: string;
+
   public toView = () => {
     return {
       id: this.id,
@@ -36,5 +41,8 @@ export default class User {
       createdAt: this.createdAt.toJSON(),
       updatedAt: this.updatedAt.toJSON(),
     };
+  }
+  public markDeleted = () => {
+    this.deleteToken = uuid();
   }
 }
