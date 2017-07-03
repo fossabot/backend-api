@@ -8,12 +8,6 @@ import { connection } from "../lib/db";
 import log from "../lib/log";
 import * as Errors from "../lib/errors";
 
-interface ICtxState {
-  authType: "Basic" | "Bearer";
-  user?: User;
-  // TODO: support confirmation& service
-}
-
 import session from "./session";
 router.use(session.routes(),
   session.allowedMethods());

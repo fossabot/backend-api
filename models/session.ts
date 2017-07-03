@@ -8,6 +8,7 @@ import User from "./user";
 import * as uuid from "uuid/v4";
 import ms = require("ms");
 import IPermission from "./IPermission";
+import log from "../lib/log";
 
 // tslint:disable:max-classes-per-file
 // tslint:disable-next-line:no-namespace
@@ -37,8 +38,10 @@ export namespace Errors {
 @Entity()
 export default class Session {
   constructor(user: User) {
-    this.uid = user.id;
-    this.token = uuid();
+    if (user) {
+      this.uid = user.id;
+      this.token = uuid();
+    }
   }
   private getNewExpirationDate = () =>
     new Date(Date.now() + ms(config.get("token_expires") as string))
@@ -53,10 +56,10 @@ export default class Session {
   public createdAt: Date;
   @UpdateDateColumn()
   public updatedAt: Date;
-  @Column({ type: "time" })
-  public expiresAt = this.getNewExpirationDate();
+  @Column()
+  public expiresAt: Date = this.getNewExpirationDate();
   public get expired() {
-    return this.expiresAt <= new Date(Date.now);
+    return this.expiresAt <= new Date(Date.now());
   }
 
   public getUser = async () => {
@@ -75,18 +78,14 @@ export default class Session {
   }
 
   public toView = async () => {
-    const user = await connection.getRepository(User).findOneById(this.uid);
-    if (!user) {
-      throw new Errors.UserNotFoundError(this.token, this.uid);
-    } else {
-      return {
-        token: this.token,
-        user: user.toView(),
-        permissions: this.permissions,
-        createdAt: this.createdAt,
-        updatedAt: this.updatedAt,
-        expiresAt: this.expiresAt,
-      };
-    }
+    const user = await this.getUser();
+    return {
+      token: this.token,
+      user: user.toView(),
+      permissions: this.permissions,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+      expiresAt: this.expiresAt,
+    };
   }
 }

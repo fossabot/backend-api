@@ -26,7 +26,8 @@ app.use(async (ctx, next) => {
     if (!(error instanceof Errors.ApiError)) {
       error = new Errors.InternalServerError(error);
     }
-    log.error("an error occured", error, error.baseError);
+    log.error(error, "an error occured",
+      JSON.stringify(error.baseError, ["message", "arguments", "type", "name", "stack"]));
     ctx.status = error.status;
     ctx.body = {
       code: error.code,

@@ -12,6 +12,7 @@ import { authUser } from "../lib/auth";
 interface ICtxState {
   authType: "Basic" | "Bearer";
   user: User;
+  session?: Session;
   // TODO: support confirmation& service
 }
 
@@ -28,6 +29,13 @@ router.put("/session", async (ctx) => {
   }
   await db.getRepository(Session).persist(session);
   ctx.body = await session.toView();
+});
+router.get("/session", async (ctx) => {
+  await authUser(ctx, "Bearer");
+  const state = ctx.state as ICtxState;
+  if (state.session) {
+    ctx.body = await state.session.toView();
+  }
 });
 
 export default router;

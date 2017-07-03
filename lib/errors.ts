@@ -42,6 +42,11 @@ export class AuthenticationNotFoundError extends ApiError {
     // TODO: auto respond WWW-Authenticate header
   }
 }
+export class CorruptedAuthorizationHeaderError extends ApiError {
+  constructor() {
+    super("CORRUPTED_AUTHORIZATION_HEADER", 400);
+  }
+}
 export class UserNotFoundError extends ApiError {
   public readonly email: string;
   constructor(email: string) {

@@ -2,3 +2,4 @@ password_hash_rounds: 12
 db_url: pg://postgres@127.0.0.1:5432/sandra
 port: 3000
 token_expires: 7d
+log_level: info
