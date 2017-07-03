@@ -11,12 +11,19 @@ import * as Errors from "../lib/errors";
 import { Errors as SessionErrors } from "../models/session";
 
 // TODO: recognize confirmation& service
-export const authUser = async (ctx: Koa.Context) => {
-  if (!ctx.headers.Authorization) {
+export const authUser = async (ctx: Koa.Context, required?: "Basic" | "Bearer") => {
+  if (!ctx.headers.authorization) {
+    if (required) {
+      ctx.set("WWW-Authenticate", required);
+    }
     throw new Errors.AuthenticationNotFoundError();
   }
-  const parsed = parse(ctx.headers.Authorization);
+  const parsed = parse(ctx.headers.authorization);
   ctx.state.authType = parsed.type;
+  if (required && parsed.type !== required) {
+    ctx.set("WWW-Authenticate", required);
+    throw new Errors.InvalidAuthenticationTypeError(parsed.type, required);
+  }
   switch (parsed.type) {
     case "Basic": {
       const user = await db.getRepository(User).findOne({

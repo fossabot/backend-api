@@ -34,6 +34,7 @@
     "material-design-lite": "^1.3.0",
     "ms": "^2.0.0",
     "mysql": "^2.13.0",
+    "pg": "^6.4.0",
     "pino": "^4.6.0",
     "reflect-metadata": "^0.1.10",
     "request": "^2.81.0",
@@ -61,9 +62,10 @@
     "test-cov": "nyc -r lcovonly -r html mocha",
     "postinstall": "tsc",
     "pretest": "tsc&& tslint -p . -e node_modules/**.*",
-    "dev": "supervisor -w . bin/run | pino",
+    "dev": "supervisor -i coverage bin/run | pino",
     "start": "node ./bin/run",
-    "lint": "tslint -p . -e node_modules/**.*"
+    "lint": "tslint -p . -e node_modules/**.*",
+    "test-nocompile": "nyc -r html mocha"
   },
   "greenkeeper": {
     "ignore": []

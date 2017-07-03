@@ -7,6 +7,7 @@ import { connection } from "../lib/db";
 import User from "./user";
 import * as uuid from "uuid/v4";
 import ms = require("ms");
+import IPermission from "./IPermission";
 
 // tslint:disable:max-classes-per-file
 // tslint:disable-next-line:no-namespace
@@ -40,19 +41,19 @@ export default class Session {
     this.token = uuid();
   }
   private getNewExpirationDate = () =>
-    new Date(Date.now() + Math.round(ms(config.get("token_expires") as string) / 1000))
+    new Date(Date.now() + ms(config.get("token_expires") as string))
 
   @Column({ type: "int" })
   public uid: number;
   @PrimaryColumn()
   public token: string;
-  @Column({ type: "boolean" })
-  public adminPermission = false;
+  @Column({ type: "jsonb" })
+  public permissions: IPermission = { admin: false };
   @CreateDateColumn()
   public createdAt: Date;
   @UpdateDateColumn()
   public updatedAt: Date;
-  @Column({ type: "datetime" })
+  @Column({ type: "time" })
   public expiresAt = this.getNewExpirationDate();
   public get expired() {
     return this.expiresAt <= new Date(Date.now);
@@ -81,9 +82,7 @@ export default class Session {
       return {
         token: this.token,
         user: user.toView(),
-        permissions: {
-          admin: this.adminPermission,
-        },
+        permissions: this.permissions,
         createdAt: this.createdAt,
         updatedAt: this.updatedAt,
         expiresAt: this.expiresAt,

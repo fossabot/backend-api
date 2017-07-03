@@ -4,7 +4,7 @@ node_js:
   - 7
 before_install: yarn global add greenkeeper-lockfile@1
 before_script:
-  - mysql -e 'CREATE DATABASE sandra;'
+  - psql -c 'create database sandra;' -U postgres
   - greenkeeper-lockfile-update
 script: yarn run test-cov
 after_script:
@@ -19,6 +19,6 @@ addons:
     packages:
       - g++-4.8
 services:
-  - mysql
+  - postgresql
 notifications:
   webhooks: https://hooks.pubu.im/services/2kl96xxbd6xnigg

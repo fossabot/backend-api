@@ -5,8 +5,8 @@ import config from "../lib/config";
 
 export let connection: Connection;
 export default createConnection({
-  type: "mysql",
-  url: config.get("mysql_url"),
+  type: "postgres",
+  url: config.get("db_url"),
   entities: [
     __dirname + "/../models/*.js",
   ],

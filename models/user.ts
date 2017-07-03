@@ -4,6 +4,7 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 import * as bcrypt from "bcrypt";
 import config from "../lib/config";
 import { connection } from "../lib/db";
+import IPermission from "./IPermission";
 
 @Entity()
 export default class User {
@@ -21,8 +22,8 @@ export default class User {
   }
   public checkPassword = async (password: string) =>
     bcrypt.compare(password, this.hashedPassword)
-  @Column({ name: "permission_admin", type: "boolean" })
-  public adminPermission = false;
+  @Column({ type: "jsonb" })
+  public permissions: IPermission = { admin: false };
   @CreateDateColumn()
   public createdAt: Date;
   @UpdateDateColumn()
@@ -31,9 +32,7 @@ export default class User {
     return {
       id: this.id,
       email: this.email,
-      permissions: {
-        admin: this.adminPermission,
-      },
+      permissions: this.permissions,
       createdAt: this.createdAt.toJSON(),
       updatedAt: this.updatedAt.toJSON(),
     };

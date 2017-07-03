@@ -9,10 +9,11 @@ import * as Errors from "../../lib/errors";
 import ms = require("ms");
 
 const baseUrl = "http://127.0.0.1:3000";
+const dateRegExp = /^\d{4,4}-\d{2,2}-\d{2,2}T\d{2,2}:\d{2,2}:\d{2,2}.\d{3,3}Z$/;
 
 // tslint:disable:no-unused-expression
 export default () => {
-  describe("POST /session", () => {
+  describe("PUT /session", () => {
     const user = new User("user@example.com");
     before(async () => {
       await db.getRepository(User).clear();
@@ -41,12 +42,21 @@ export default () => {
         },
       });
       expect(result.statusCode).eql(200);
-      expect(result.body.token).to.be("string");
-      expect(result.user).to.eql(user.toView());
+      expect(result.body.token).to.be.a("string");
+      {
+        const us = result.body.user;
+        const uv = user.toView();
+        const handleDate = (str: string) => str.substr(0, str.length - 5);
+        expect(us.id).to.eql(uv.id);
+        expect(us.email).to.eql(uv.email);
+        expect(us.permissions).to.eql(uv.permissions);
+        expect(handleDate(us.createdAt)).to.eql(handleDate(uv.createdAt));
+        expect(handleDate(us.updatedAt)).to.eql(handleDate(uv.updatedAt));
+      }
       expect(result.body.permissions.admin).to.be.false;
-      expect(result.body.createdAt).to.be.instanceOf(Date);
-      expect(result.body.updatedAt).to.be.instanceOf(Date);
-      expect(result.body.expiresAt).to.be.instanceOf(Date);
+      expect(result.body.createdAt).to.match(dateRegExp);
+      expect(result.body.updatedAt).to.match(dateRegExp);
+      expect(result.body.expiresAt).to.match(dateRegExp);
     });
     it("return 401 for unauthorized request", async () => {
       const result = await request({
@@ -57,8 +67,23 @@ export default () => {
         json: true,
       });
       expect(result.statusCode).eql(401);
-      expect(result.body.code).eql("BASIC_AUTH_NOT_SUPPLIED");
-      expect(result.headers["WWW-Authenticate"]).eql("Basic");
+      expect(result.body.code).eql("AUTHENTICATION_NOT_FOUND");
+      expect(result.headers["www-authenticate"]).eql("Basic");
+    });
+    it("return 401 for unauthorized request", async () => {
+      const result = await request({
+        method: "PUT",
+        url: `${baseUrl}/session`,
+        simple: false,
+        resolveWithFullResponse: true,
+        json: true,
+        auth: {
+          bearer: "SOME_TOKEN",
+        },
+      });
+      expect(result.statusCode).eql(401);
+      expect(result.body.code).eql("INVALID_AUTHENTICATION_TYPE");
+      expect(result.headers["www-authenticate"]).eql("Basic");
     });
     it("return 403 for unfound email", async () => {
       const result = await request({
@@ -73,9 +98,9 @@ export default () => {
         },
       });
       expect(result.statusCode).eql(403);
-      expect(result.body.code).eql("EMAIL_NOT_FOUND");
+      expect(result.body.code).eql("USER_NOT_FOUND");
     });
-    it("return 403 for unfound email", async () => {
+    it("return 403 for wrong password", async () => {
       const result = await request({
         method: "PUT",
         url: `${baseUrl}/session`,
@@ -92,7 +117,7 @@ export default () => {
     });
     describe("without admin permissions", () => {
       before(async () => {
-        user.adminPermission = false;
+        user.permissions.admin = false;
         await db.getRepository(User).persist(user);
       });
       it("throws 403 on insufficient permissions", async () => {
@@ -118,7 +143,7 @@ export default () => {
     });
     describe("with admin permission", () => {
       before(async () => {
-        user.adminPermission = true;
+        user.permissions.admin = true;
         await db.getRepository(User).persist(user);
       });
       it("defaults to false", async () => {

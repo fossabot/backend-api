@@ -14,4 +14,8 @@ interface ICtxState {
   // TODO: support confirmation& service
 }
 
+import session from "./session";
+router.use(session.routes(),
+  session.allowedMethods());
+
 export default router;
