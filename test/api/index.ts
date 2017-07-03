@@ -1,8 +1,9 @@
 "use strict";
 
 import common from "./common";
+import session from "./session";
 
-export default () => {
-  // TODO: use await import('./utils/create-zip-file') on TS2.4
+export default async () => {
   describe("common", common);
+  describe("session", session);
 };

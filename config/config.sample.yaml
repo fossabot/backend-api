@@ -1,4 +1,5 @@
 password_hash_rounds: 12
-mysql_url: mysql://root:0bea58c2@127.0.0.1:3306/sandra
+db_url: pg://postgres@127.0.0.1:5432/sandra
 port: 3000
-jwt_key: 943a3bb4
+token_expires: 7d
+log_level: info
