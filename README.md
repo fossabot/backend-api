@@ -4,6 +4,7 @@
 [![Coveralls](https://img.shields.io/coveralls/SANDRAProject/backend-api.svg?style=flat-square)](https://coveralls.io/github/SANDRAProject/backend-api)
 [![license](https://img.shields.io/github/license/SANDRAProject/backend-api.svg?style=flat-square)](https://github.com/SANDRAProject/backend-api/blob/master/LICENSE.md)
 [![TypeScript](https://img.shields.io/badge/TypeScript-v2.3.4-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FSANDRAProject%2Fbackend-api.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FSANDRAProject%2Fbackend-api?ref=badge_shield)
 
 API provider for [Sandra](https://github.com/SANDRAProject).
 
@@ -40,3 +41,5 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FSANDRAProject%2Fbackend-api.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FSANDRAProject%2Fbackend-api?ref=badge_large)
